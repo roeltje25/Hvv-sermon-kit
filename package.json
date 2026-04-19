@@ -1,0 +1,12 @@
+{
+  "name": "hvv-sermon-kit",
+  "version": "1.0.0",
+  "description": "Meertalige preek-pakket generator voor HVV (Hoop voor Vluchtelingen)",
+  "private": true,
+  "scripts": {
+    "generate-presentation": "node scripts/generate_presentation.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0"
+  }
+}

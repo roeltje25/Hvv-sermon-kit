@@ -1,0 +1,28 @@
+{
+  "passage_label": "BOEK H:V–V",
+  "passage_label_short": "BOEK H",
+  "languages": ["nl", "en", "fr", "ar", "fa", "tr"],
+  "title": {
+    "nl": "<Nederlandse titel>",
+    "en": "<English title>",
+    "ar": "<عنوان عربي>",
+    "fa": "<عنوان فارسی>"
+  },
+  "qr_image": null,
+  "qr_caption": "Scan voor de bijbelpassage",
+  "verse_groups": [
+    [1, 2, 3],
+    [4, 5, 6]
+  ],
+  "points": [
+    {
+      "title": {
+        "nl": "<Titel punt 1>",
+        "en": "<Title point 1>",
+        "ar": "<عنوان النقطة ١>",
+        "fa": "<عنوان نکته ۱>"
+      },
+      "image": null
+    }
+  ]
+}
