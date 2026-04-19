@@ -1,0 +1,27 @@
+{
+  "_comment": "Elk taalsleutel bevat een object met versnummers als sleutels. Voeg alleen verzen toe die in de passage voorkomen. Claude mag NOOIT bijbelverzen uit geheugen invoegen — alles moet door de oudste worden geplakt uit een officiële bron.",
+  "nl": {
+    "1": "<vers 1 in Nederlands - NBV21>",
+    "2": "<vers 2 in Nederlands - NBV21>"
+  },
+  "en": {
+    "1": "<verse 1 in English - NIV>",
+    "2": "<verse 2 in English - NIV>"
+  },
+  "fr": {
+    "1": "<verset 1 en français - BDS>",
+    "2": "<verset 2 en français - BDS>"
+  },
+  "ar": {
+    "1": "<الآية ١ بالعربية - GNA2025>",
+    "2": "<الآية ٢ بالعربية - GNA2025>"
+  },
+  "fa": {
+    "1": "<آیه ۱ فارسی - NMV>",
+    "2": "<آیه ۲ فارسی - NMV>"
+  },
+  "tr": {
+    "1": "<ayet 1 Türkçe - TCL02>",
+    "2": "<ayet 2 Türkçe - TCL02>"
+  }
+}

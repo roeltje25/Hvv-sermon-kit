@@ -1,0 +1,21 @@
+{
+  "title": "Kinderblad",
+  "subtitle": "<Passage> — <Titel>",
+  "wordsearch": {
+    "words": ["WOORD1", "WOORD2", "WOORD3"],
+    "display_words": ["Woord1", "Woord2", "Woord3"],
+    "grid_size": 14
+  },
+  "story_order": {
+    "images": [
+      "<pad/naar/plaatje1.jpg>",
+      "<pad/naar/plaatje2.jpg>"
+    ]
+  },
+  "questions": {
+    "items": [
+      "<Vraag 1?>",
+      "<Vraag 2?>"
+    ]
+  }
+}
