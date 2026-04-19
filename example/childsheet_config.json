@@ -1,0 +1,34 @@
+{
+  "title": "Kinderblad",
+  "subtitle": "Matteüs 9:18–26 — Hou moed, lieve dochter",
+  "wordsearch": {
+    "words": [
+      "JAIRUS", "JEZUS", "MENIGTE", "SYNAGOGE", "AANBIDDEN",
+      "BOVENKLEED", "GESTORVEN", "WONDER", "LEVEN", "TWAALF",
+      "LIEFDE", "GELOOF", "DISCIPELEN", "OMDRAAIEN", "VOLGEN"
+    ],
+    "display_words": [
+      "Jaïrus", "Jezus", "Menigte", "Synagoge", "Aanbidden",
+      "Bovenkleed", "Gestorven", "Wonder", "Leven", "Twaalf",
+      "Liefde", "Geloof", "Discipelen", "Omdraaien", "Volgen"
+    ],
+    "grid_size": 14
+  },
+  "story_order": {
+    "images": [
+      "example/story_images/story_a.jpg",
+      "example/story_images/story_b.jpg",
+      "example/story_images/story_c.jpg",
+      "example/story_images/story_d.jpg",
+      "example/story_images/story_e.jpg",
+      "example/story_images/story_f.jpg"
+    ]
+  },
+  "questions": {
+    "items": [
+      "Wanneer was jij erg verdrietig of bang?",
+      "Naar wie ging jij toen toe? Wie heeft jou geholpen?",
+      "Wat zou Jezus voor jou kunnen doen?"
+    ]
+  }
+}

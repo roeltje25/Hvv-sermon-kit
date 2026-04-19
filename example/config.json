@@ -1,0 +1,52 @@
+{
+  "passage_label": "Matteüs 9:18–26",
+  "passage_label_short": "Matteüs 9",
+  "languages": ["nl", "en", "fr", "ar", "fa", "tr"],
+  "title": {
+    "nl": "Hou moed, lieve dochter",
+    "en": "Take heart, dear daughter",
+    "ar": "ثِقي يا ابْنَتي العَزيزَة",
+    "fa": "دلیر باش، دخترم عزیز"
+  },
+  "qr_image": "example/qr.png",
+  "qr_caption": "Scan voor de bijbelpassage",
+  "verse_groups": [[18, 19], [20, 21, 22], [23, 24, 25, 26]],
+  "points": [
+    {
+      "title": {
+        "nl": "De leider en de vrouw",
+        "en": "The leader and the woman",
+        "ar": "الرَّئيسُ والْمَرْأَةُ",
+        "fa": "رئیس و زن"
+      },
+      "image": "example/point_images/point1_leader_woman.jpg"
+    },
+    {
+      "title": {
+        "nl": "De menigte",
+        "en": "The crowd",
+        "ar": "الْجَمْعُ",
+        "fa": "جمعیت"
+      },
+      "image": "example/point_images/point2_crowd.jpg"
+    },
+    {
+      "title": {
+        "nl": "Jezus",
+        "en": "Jesus",
+        "ar": "يَسُوعُ",
+        "fa": "عیسی"
+      },
+      "image": "example/point_images/point3_jesus.jpg"
+    },
+    {
+      "title": {
+        "nl": "Wij",
+        "en": "We",
+        "ar": "نَحْنُ",
+        "fa": "ما"
+      },
+      "image": "example/point_images/point4_us.jpg"
+    }
+  ]
+}
