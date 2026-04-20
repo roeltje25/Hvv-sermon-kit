@@ -11,6 +11,9 @@ Usage:
 
   python3 bible_urls.py qr <url> <output.png>
       Generates a QR code PNG styled in the parchment palette.
+
+  python3 bible_urls.py springplank <passage>
+      Prints the springplank URL for use as QR target (roeltje25.github.io/bible).
 """
 
 import json
@@ -88,6 +91,15 @@ def parse_passage(passage):
     return {"book": book, "chapter": chapter, "start": start, "end": end, "verses": verses}
 
 
+def springplank_url(passage):
+    """Return the HVV springplank URL for a passage (used for QR codes by default).
+
+    The springplank page at roeltje25.github.io/bible accepts ?ref=BOOK.CHAPTER.VERSES
+    and lets the reader pick their preferred translation.
+    """
+    return f"https://roeltje25.github.io/bible/?ref={passage}"
+
+
 def build_url(lang, passage):
     """Build a URL for the given language and passage."""
     v = VERSIONS.get(lang)
@@ -104,7 +116,16 @@ def build_url(lang, passage):
             f"{p['book']}.{p['chapter']}.{p['start']}-{p['book']}.{p['chapter']}.{p['end']}"
         )
 
-    # bible.com
+    # bible.com — Psalms on GNA2025 require a different URL format (bible.com quirk):
+    # standard:  bible.com/bible/67/PSA.1.1-6.GNA2025  → "No Available Verses"
+    # working:   bible.com/bible/67/psa.1_1.1-6.GNA2025
+    # All other books work fine with the standard format.
+    if lang == "ar" and p["book"] == "PSA":
+        return (
+            f"https://bible.com/bible/{v['version_id']}/"
+            f"psa.1_{p['chapter']}.{p['verses']}.{v['version_code']}"
+        )
+
     return (
         f"https://www.bible.com/bible/{v['version_id']}/"
         f"{p['book']}.{p['chapter']}.{p['verses']}.{v['version_code']}"
@@ -168,6 +189,11 @@ def main():
         output = sys.argv[3]
         generate_qr(url, output)
         print(f"QR code written: {output}")
+
+    elif cmd == "springplank":
+        if len(sys.argv) != 3:
+            _usage()
+        print(springplank_url(sys.argv[2]))
 
     else:
         _usage()

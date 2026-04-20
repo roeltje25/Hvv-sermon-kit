@@ -611,6 +611,16 @@ def main():
         q_conf["section_num"] = section_num
         cursor_y = draw_questions(c, W, cursor_y, q_conf)
 
+    # Overlap check: warn if content reached the footer zone
+    footer_limit = 1.2 * cm
+    if cursor_y < footer_limit:
+        print(
+            f"WARNING: Content bottom ({cursor_y / cm:.1f}cm from page bottom) is below "
+            f"the safe zone ({footer_limit / cm:.1f}cm). Sections may overlap the footer. "
+            "Consider removing a section or reducing grid_size.",
+            file=sys.stderr,
+        )
+
     # Footer
     draw_footer(c, W)
 

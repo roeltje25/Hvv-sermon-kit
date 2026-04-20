@@ -83,10 +83,17 @@ async function main() {
   pres.layout = "LAYOUT_16x9";
   pres.title = config.passage_label || "Preek";
 
-  buildTitleSlide(pres, config, palette);
-  buildBibleTextSlides(pres, config, bibleTexts, languages, palette);
-  buildOutlineSlide(pres, config, palette);
-  buildPointSlides(pres, config, palette);
+  // mode: "full" (default) — title + bible + outline + points
+  //       "bible_only"     — only the bible text slides
+  const mode = config.mode || "full";
+  if (mode === "bible_only") {
+    buildBibleTextSlides(pres, config, bibleTexts, languages, palette);
+  } else {
+    buildTitleSlide(pres, config, palette);
+    buildBibleTextSlides(pres, config, bibleTexts, languages, palette);
+    buildOutlineSlide(pres, config, palette);
+    buildPointSlides(pres, config, palette);
+  }
 
   await pres.writeFile({ fileName: outputPath });
   console.log(`Presentation written: ${outputPath}`);

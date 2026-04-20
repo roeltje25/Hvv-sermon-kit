@@ -189,14 +189,22 @@ Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentati
 1. Ask for the Dutch title of the sermon (de kernboodschap, bijvoorbeeld een quote uit de passage).
 2. Ask if they want the title translated into English, Arabic, and Farsi. Offer to help: *"Zal ik een voorstel doen voor de Engelse vertaling? Arabisch en Farsi translate ik ook graag voor je, maar controleer even of de formulering past."*
    - You MAY provide title translations — those are short phrases, not bible verses.
-3. Ask if they want a QR code on the title slide. If yes, ask where the QR should link to (default: the NBV21 URL of the passage).
-4. Generate the QR code with `python3 scripts/bible_urls.py qr <URL> <output_path>`.
+3. Ask if they want a QR code on the title slide. If yes, generate one pointing to the springplank page (default):
+   ```
+   python3 scripts/bible_urls.py springplank <PASSAGE>   # prints the URL
+   python3 scripts/bible_urls.py qr <URL> <output_path>  # generates the PNG
+   ```
+   The springplank URL (`https://roeltje25.github.io/bible/?ref=<PASSAGE>`) lets the congregation choose their own translation. Only use a different URL if the elder explicitly requests it.
 
 ### Phase 4 — Verse distribution over slides
 
 Ask how the verses should be distributed over bible-text slides.
 
 Suggest a sensible default based on the passage length (aim for 2–4 verses per slide, balancing length of individual verses). Show the suggestion as prose: *"Ik stel voor om de verzen zo te verdelen: 18–19 op dia 1, 20–22 op dia 2, 23–26 op dia 3. Akkoord?"*
+
+### Phase 4b — Presentatiemodus (optioneel)
+
+Ask if the elder wants the full presentation (title + bible texts + outline + points) or only the bible text slides. If only bible texts are needed, set `"mode": "bible_only"` in `config.json` — the generator will then skip the title slide, outline, and point slides.
 
 ### Phase 5 — Outline / sermon points
 
@@ -218,15 +226,19 @@ Present the `.pptx` to the elder. Offer a preview (convert to PDF + images for v
 
 ### Phase 7 — Kinderblad
 
-Start a separate conversation about the children's sheet. Each sermon is different, so the activities differ.
+Start a separate conversation about the children's sheet. **Every sermon gets its own custom activities** — do not reuse the same sections by default. Think about what fits this specific passage and theme.
 
-Ask: *"Voor het kinderblad: welke onderdelen wil je? We hebben doorgaans drie mogelijkheden: een woordzoeker, een verhaalvolgorde met plaatjes, en open vragen om over na te denken. Welke past bij deze preek?"*
+Ask: *"Voor het kinderblad: welke opdrachten passen bij deze preek? Ik kan een woordzoeker maken, een verhaalvolgorde met plaatjes, open vragen, of een creatieve tekenactiviteit (zoals een kleurplaat, verbind-de-punten, invuloefening, of een matchingopdracht). Wat spreekt je aan voor dit verhaal?"*
 
-Discuss each chosen section:
+**Available sections (combine freely):**
 
-- **Woordzoeker**: ask for ~12–16 words related to the passage. Short words work better than long ones.
-- **Verhaalvolgorde**: ask for 4–6 images showing the story's scenes. Determine the correct order together.
-- **Vragen**: brainstorm 2–4 open questions that help children reflect on the passage's theme.
+- **Woordzoeker** (`wordsearch`): ask for ~12–16 words from the passage. Short words work best.
+- **Verhaalvolgorde** (`story_order`): ask for 4–6 images showing the story's scenes.
+- **Vruchtenboom** (`fruit_tree`): bare tree + apple-shaped words (good/bad), children draw lines to the tree. Works well for passages about growth, choices, or character.
+- **Vragen** (`questions`): brainstorm 2–4 open questions that help children reflect on the theme.
+- **Andere activiteiten**: if the elder wants something else (kleurplaat van een scène, verbind-de-punten, invuloefening), implement it as a new `draw_*` function in `generate_childsheet.py` following the same coloring-book style.
+
+**Style rule for all drawn elements:** Thick outlines (≥ 2pt), white fill so children can color in, clear recognizable shapes. No abstract line art.
 
 Generate with:
 ```
@@ -236,6 +248,8 @@ python3 scripts/generate_childsheet.py <childsheet_config.json> <output.pdf>
 ### Phase 8 — Delivery
 
 Present both files as downloads. Ask if anything needs adjusting. Iterate if needed.
+
+**Note for Claude Code sessions (IT users only):** Generated `.pptx` and `.pdf` files are in the `output/` folder but are excluded from git by default. To share them via GitHub, run `git add -f output/<file>` and push. Regular elders using Claude on the web receive the files directly as downloadable artifacts — no extra steps needed.
 
 ---
 
