@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HVV Preekpakket Maker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #EDE8DC;
+      color: #2C1F13;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      color: #3D2B1F;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      color: #6B4C35;
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+
+    .divider {
+      width: 6rem;
+      border: none;
+      border-top: 2px solid #C8B99A;
+      margin: 1.5rem auto;
+    }
+
+    .card {
+      background: #F5F0E8;
+      border: 1.5px solid #C8B99A;
+      border-radius: 8px;
+      padding: 2rem 2.5rem;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .steps {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: #3D2B1F;
+      color: #F5F0E8;
+      font-size: 0.95rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+
+    .step-text strong {
+      display: block;
+      font-size: 1rem;
+      color: #3D2B1F;
+      margin-bottom: 0.2rem;
+    }
+
+    .step-text span {
+      font-size: 0.9rem;
+      color: #6B4C35;
+      line-height: 1.5;
+    }
+
+    .step-icon {
+      display: inline-block;
+      background: #EDE8DC;
+      border: 1px solid #C8B99A;
+      border-radius: 4px;
+      padding: 0 0.35rem;
+      font-style: normal;
+      font-size: 0.85rem;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 2rem;
+      padding: 0.9rem 1.5rem;
+      background: #3D2B1F;
+      color: #F5F0E8;
+      border: none;
+      border-radius: 6px;
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn:hover { background: #5a3f2e; }
+    .btn:active { background: #2a1d13; }
+
+    .notice {
+      margin-top: 1rem;
+      font-size: 0.82rem;
+      color: #6B4C35;
+      font-style: italic;
+      text-align: center;
+      display: none;
+    }
+
+    .notice.show { display: block; }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #9C8470;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>HVV Preekpakket Maker</h1>
+    <p>Hoop voor Vluchtelingen — Sermon Kit</p>
+  </header>
+
+  <hr class="divider">
+
+  <div class="card">
+    <ol class="steps">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <strong>Klik op de knop hieronder</strong>
+          <span>De kit wordt gedownload en Claude.ai opent automatisch in een nieuw tabblad.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <strong>Voeg het zip-bestand toe in Claude</strong>
+          <span>Klik op het paperclip-icoontje <em class="step-icon">📎</em> en selecteer het bestand <strong>hvv-sermon-kit.zip</strong> dat zojuist gedownload is.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <strong>Plak de startprompt en druk op verzenden</strong>
+          <span>De tekst staat al op je klembord. Klik in het tekstvak van Claude en druk <em class="step-icon">Ctrl+V</em> (of <em class="step-icon">⌘V</em> op Mac), dan op verzenden.</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <strong>Claude begint het gesprek</strong>
+          <span>Claude leest de instructies en vraagt je naar de bijbelpassage voor de preek.</span>
+        </div>
+      </li>
+    </ol>
+
+    <button class="btn" onclick="start()">⬇ Download kit &amp; open Claude</button>
+    <p class="notice" id="notice">✓ Kit gedownload en startprompt gekopieerd — Claude.ai is geopend in een nieuw tabblad.</p>
+  </div>
+
+  <footer>HVV — Hoop voor Vluchtelingen</footer>
+
+  <script>
+    const PROMPT = `Hallo! Ik heb zojuist de HVV Sermon Kit bijgevoegd als zip-bestand. Lees het bestand CLAUDE.md daarin en start de voorbereiding van een nieuw preekpakket. Begin met je begroeting en de eerste vraag.`;
+
+    const ZIP_URL = 'https://github.com/roeltje25/Hvv-sermon-kit/archive/refs/heads/main.zip';
+
+    function start() {
+      // 1. Download zip
+      const a = document.createElement('a');
+      a.href = ZIP_URL;
+      a.download = 'hvv-sermon-kit.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // 2. Copy prompt to clipboard
+      navigator.clipboard.writeText(PROMPT).catch(() => {
+        // Fallback for browsers that block clipboard
+        const ta = document.createElement('textarea');
+        ta.value = PROMPT;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+
+      // 3. Open Claude.ai
+      window.open('https://claude.ai/new', '_blank');
+
+      // 4. Show confirmation
+      document.getElementById('notice').classList.add('show');
+    }
+  </script>
+
+</body>
+</html>
