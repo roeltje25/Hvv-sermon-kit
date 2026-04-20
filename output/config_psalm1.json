@@ -1,0 +1,62 @@
+{
+  "passage_label": "Psalm 1:1–6",
+  "passage_label_short": "Psalm 1",
+  "languages": ["nl", "en", "fr", "ar", "fa", "tr"],
+  "title": {
+    "nl": "Worden als een boom",
+    "en": "Becoming like a tree",
+    "fr": "Devenir comme un arbre",
+    "ar": "أن تكون كشجرة",
+    "fa": "مثل یک درخت شدن",
+    "tr": "Bir ağaç gibi olmak"
+  },
+  "qr_image": "output/qr_psalm1.png",
+  "qr_caption": "Scan voor de bijbelpassage",
+  "verse_groups": [[1, 2], [3], [4, 5, 6]],
+  "points": [
+    {
+      "title": {
+        "nl": "Niet meegaan met de stroom",
+        "en": "Not going with the flow",
+        "fr": "Ne pas suivre le courant",
+        "ar": "لا تسير مع التيار",
+        "fa": "با جریان نرو",
+        "tr": "Akıntıya kapılmamak"
+      },
+      "image": "output/point1.jpg"
+    },
+    {
+      "title": {
+        "nl": "Dag en nacht in Gods woord",
+        "en": "Day and night in God's word",
+        "fr": "Jour et nuit dans la parole de Dieu",
+        "ar": "نهارًا وليلًا في كلمة الله",
+        "fa": "شبانه‌روز در کلام خدا",
+        "tr": "Gece gündüz Tanrı'nın sözünde"
+      },
+      "image": "output/point2.jpg"
+    },
+    {
+      "title": {
+        "nl": "Groeien als een boom",
+        "en": "Growing like a tree",
+        "fr": "Grandir comme un arbre",
+        "ar": "النمو كشجرة",
+        "fa": "مثل یک درخت رشد کردن",
+        "tr": "Bir ağaç gibi büyümek"
+      },
+      "image": "output/point3.jpg"
+    },
+    {
+      "title": {
+        "nl": "Twee wegen, één keuze",
+        "en": "Two paths, one choice",
+        "fr": "Deux chemins, un seul choix",
+        "ar": "طريقان، خيار واحد",
+        "fa": "دو راه، یک انتخاب",
+        "tr": "İki yol, bir seçim"
+      },
+      "image": "output/point4.jpg"
+    }
+  ]
+}
