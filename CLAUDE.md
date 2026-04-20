@@ -211,8 +211,20 @@ Ask for the sermon points. Accept any number (1, 2, 3, 4, 5+). For each:
 
 1. Dutch title (keep it short — 2–5 words works best).
 2. Translations into EN, AR, FA (you may provide these, double-check with elder).
-3. Afbeelding: either a file they'll upload, or a placeholder.
-4. If the elder has a style reference image for a point, handle per `STYLE.md`.
+3. Afbeelding: offer to search automatically, or let the elder provide their own:
+   > *"Voor de afbeeldingen bij de punten: ik kan zelf passende foto's zoeken (via Unsplash, gratis te gebruiken), of je kunt eigen foto's aanleveren. Wat heeft je voorkeur?"*
+   - If searching: use `WebSearch` + `curl` to find and download from Unsplash. Always show what was found and ask for approval before using.
+   - If the elder uploads or provides a path: use that directly.
+   - If nothing is available yet: use `null` (generates a "[ afbeelding volgt ]" placeholder).
+
+### Phase 5b — Presentatiestijl
+
+Before generating, ask about the visual style:
+
+> *"De standaardstijl is 'parchment': warme beige achtergrond, bruine tekst, klassiek lettertype. Is dat goed, of wil je een andere stijl? Je kunt een inspiratiefoto of een dia plakken, dan pas ik de kleuren daarop aan."*
+
+- If the elder is happy with parchment: proceed as-is.
+- If the elder provides a reference image: extract dominant colors, build a palette, show it to the elder before generating. Handle per `STYLE.md`.
 
 ### Phase 6 — Generate the presentation
 
