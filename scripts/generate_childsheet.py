@@ -287,35 +287,100 @@ def draw_story_order(c, W, top_y, config):
 
 
 def _draw_bare_tree(c, cx, bottom_y, height):
+    """Coloring-book style tree: outlined trunk + cloud canopy, white fill."""
     brown = HexColor("#6B4C35")
+    trunk_h = height * 0.36
+    canopy_base = bottom_y + trunk_h
+
+    # Trunk as outlined trapezoid (white fill so it covers the canopy bottom)
+    tw_bot = 0.55 * cm
+    tw_top = 0.32 * cm
+    trunk_path = c.beginPath()
+    trunk_path.moveTo(cx - tw_bot, bottom_y)
+    trunk_path.lineTo(cx + tw_bot, bottom_y)
+    trunk_path.lineTo(cx + tw_top, canopy_base)
+    trunk_path.lineTo(cx - tw_top, canopy_base)
+    trunk_path.close()
+    c.setFillColor(HexColor("#FFFFFF"))
     c.setStrokeColor(brown)
-    trunk_h = height * 0.32
-    branch_base = bottom_y + trunk_h
+    c.setLineWidth(1.4)
+    c.drawPath(trunk_path, fill=1, stroke=1)
 
-    c.setLineWidth(4)
-    c.line(cx, bottom_y, cx, branch_base)
+    # Bark texture lines
+    c.setLineWidth(0.5)
+    c.setStrokeColor(brown)
+    c.line(cx - tw_bot * 0.4, bottom_y + trunk_h * 0.18,
+           cx + tw_bot * 0.6, bottom_y + trunk_h * 0.32)
+    c.line(cx - tw_bot * 0.6, bottom_y + trunk_h * 0.52,
+           cx + tw_bot * 0.3, bottom_y + trunk_h * 0.65)
 
+    # Cloud-like canopy using bezier curves
     bh = height - trunk_h
-    c.setLineWidth(2.5)
-    c.line(cx, branch_base, cx, branch_base + bh)
-    c.line(cx, branch_base + bh * 0.25, cx - 1.6 * cm, branch_base + bh * 0.62)
-    c.line(cx, branch_base + bh * 0.25, cx + 1.6 * cm, branch_base + bh * 0.62)
+    cy = canopy_base  # base of canopy
+    # Control points tuned for a round, bumpy cloud crown
+    canopy = c.beginPath()
+    canopy.moveTo(cx - 0.6 * cm, cy)
+    canopy.curveTo(cx - 2.8 * cm, cy + 0.3 * cm,
+                   cx - 3.2 * cm, cy + bh * 0.45,
+                   cx - 2.4 * cm, cy + bh * 0.62)
+    canopy.curveTo(cx - 3.0 * cm, cy + bh * 0.80,
+                   cx - 2.2 * cm, cy + bh * 1.05,
+                   cx - 1.0 * cm, cy + bh * 0.90)
+    canopy.curveTo(cx - 0.8 * cm, cy + bh * 1.15,
+                   cx + 0.8 * cm, cy + bh * 1.15,
+                   cx + 1.0 * cm, cy + bh * 0.90)
+    canopy.curveTo(cx + 2.2 * cm, cy + bh * 1.05,
+                   cx + 3.0 * cm, cy + bh * 0.80,
+                   cx + 2.4 * cm, cy + bh * 0.62)
+    canopy.curveTo(cx + 3.2 * cm, cy + bh * 0.45,
+                   cx + 2.8 * cm, cy + 0.3 * cm,
+                   cx + 0.6 * cm, cy)
+    canopy.close()
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setStrokeColor(brown)
+    c.setLineWidth(1.6)
+    c.drawPath(canopy, fill=1, stroke=1)
 
-    c.setLineWidth(1.5)
-    c.line(cx - 1.6 * cm, branch_base + bh * 0.62, cx - 2.3 * cm, branch_base + bh * 0.85)
-    c.line(cx - 1.6 * cm, branch_base + bh * 0.62, cx - 0.8 * cm, branch_base + bh * 0.90)
-    c.line(cx + 1.6 * cm, branch_base + bh * 0.62, cx + 2.3 * cm, branch_base + bh * 0.85)
-    c.line(cx + 1.6 * cm, branch_base + bh * 0.62, cx + 0.8 * cm, branch_base + bh * 0.90)
-    c.line(cx, branch_base + bh * 0.50, cx - 1.1 * cm, branch_base + bh * 0.78)
-    c.line(cx, branch_base + bh * 0.50, cx + 1.1 * cm, branch_base + bh * 0.78)
+    # Redraw trunk on top so canopy doesn't cover it
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setStrokeColor(brown)
+    c.setLineWidth(1.4)
+    c.drawPath(trunk_path, fill=1, stroke=1)
+    c.setLineWidth(0.5)
+    c.line(cx - tw_bot * 0.4, bottom_y + trunk_h * 0.18,
+           cx + tw_bot * 0.6, bottom_y + trunk_h * 0.32)
+    c.line(cx - tw_bot * 0.6, bottom_y + trunk_h * 0.52,
+           cx + tw_bot * 0.3, bottom_y + trunk_h * 0.65)
 
+
+def _draw_fruit_shape(c, cx, cy, r, label, fill_color, brown):
+    """Coloring-book apple: circle + stem + leaf + label."""
+    # Apple body
+    c.setFillColor(fill_color)
+    c.setStrokeColor(brown)
+    c.setLineWidth(1.2)
+    c.circle(cx, cy, r, fill=1, stroke=1)
+
+    # Stem
     c.setLineWidth(1.0)
-    c.line(cx - 2.3 * cm, branch_base + bh * 0.85, cx - 2.7 * cm, branch_base + bh * 0.97)
-    c.line(cx - 2.3 * cm, branch_base + bh * 0.85, cx - 1.8 * cm, branch_base + bh * 0.99)
-    c.line(cx + 2.3 * cm, branch_base + bh * 0.85, cx + 2.7 * cm, branch_base + bh * 0.97)
-    c.line(cx + 2.3 * cm, branch_base + bh * 0.85, cx + 1.8 * cm, branch_base + bh * 0.99)
-    c.line(cx, branch_base + bh, cx - 0.5 * cm, branch_base + bh * 1.05)
-    c.line(cx, branch_base + bh, cx + 0.5 * cm, branch_base + bh * 1.05)
+    c.line(cx, cy + r, cx + 0.1 * cm, cy + r + 0.35 * cm)
+
+    # Leaf (small bezier teardrop)
+    lx, ly = cx + 0.1 * cm, cy + r + 0.2 * cm
+    leaf = c.beginPath()
+    leaf.moveTo(lx, ly)
+    leaf.curveTo(lx + 0.45 * cm, ly + 0.35 * cm,
+                 lx + 0.55 * cm, ly - 0.1 * cm,
+                 lx, ly)
+    c.setFillColor(HexColor("#B8D4A0"))
+    c.setStrokeColor(brown)
+    c.setLineWidth(0.7)
+    c.drawPath(leaf, fill=1, stroke=1)
+
+    # Label
+    c.setFillColor(HexColor("#2C1F13"))
+    c.setFont("Times-Roman", 7.5)
+    c.drawCentredString(cx, cy - 0.13 * cm, label)
 
 
 def draw_fruit_tree(c, W, top_y, config):
@@ -336,41 +401,37 @@ def draw_fruit_tree(c, W, top_y, config):
     c.drawCentredString(W / 2, top_y - 0.4 * cm, instruction)
 
     content_top = top_y - 1.0 * cm
-    section_h = 8.5 * cm
+    section_h = 9.0 * cm
+    brown = HexColor("#6B4C35")
 
-    # Tree on left quarter
-    tree_cx = 4.2 * cm
-    tree_bottom = content_top - section_h + 0.3 * cm
-    _draw_bare_tree(c, tree_cx, tree_bottom, section_h - 0.3 * cm)
+    # Tree on left side
+    tree_cx = 4.5 * cm
+    tree_bottom = content_top - section_h + 0.5 * cm
+    _draw_bare_tree(c, tree_cx, tree_bottom, section_h - 0.5 * cm)
 
-    # Fruits on right side — mix good and bad, shuffle deterministically
+    # Fruits: apple shapes in 3 columns on the right
     all_fruits = [(w, True) for w in good_fruits] + [(w, False) for w in bad_fruits]
     rng = random.Random(77)
     rng.shuffle(all_fruits)
 
-    fruit_w = 3.5 * cm
-    fruit_h = 0.72 * cm
-    fruit_gap_y = 0.32 * cm
-    fruits_x_start = W / 2 + 0.2 * cm
-    col_w = fruit_w + 0.55 * cm
+    r = 0.62 * cm          # apple radius
+    gap_x = 0.35 * cm
+    gap_y = 0.45 * cm
+    fruits_x0 = W / 2 + 0.3 * cm
+    cols = 3
+    col_w = 2 * r + gap_x
     n = len(all_fruits)
-    rows_per_col = (n + 1) // 2
+    rows = (n + cols - 1) // cols
 
     for i, (word, is_good) in enumerate(all_fruits):
-        col = i // rows_per_col
-        row = i % rows_per_col
-        x = fruits_x_start + col * col_w
-        y = content_top - row * (fruit_h + fruit_gap_y) - fruit_h
+        col = i % cols
+        row = i // cols
+        cx_f = fruits_x0 + col * col_w + r
+        # +0.4cm to leave room for stem+leaf above
+        cy_f = content_top - 0.4 * cm - row * (2 * r + gap_y + 0.4 * cm) - r
 
-        fill_color = HexColor("#C8DEB8") if is_good else HexColor("#E8C0BC")
-        c.setFillColor(fill_color)
-        c.setStrokeColor(P["border"])
-        c.setLineWidth(0.6)
-        c.ellipse(x, y, x + fruit_w, y + fruit_h, fill=1, stroke=1)
-
-        c.setFillColor(P["text"])
-        c.setFont("Times-Roman", 9)
-        c.drawCentredString(x + fruit_w / 2, y + 0.19 * cm, word)
+        fill_color = HexColor("#D4EDBC") if is_good else HexColor("#F0C8C4")
+        _draw_fruit_shape(c, cx_f, cy_f, r, word, fill_color, brown)
 
     return content_top - section_h
 
