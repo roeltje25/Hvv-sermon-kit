@@ -1,6 +1,6 @@
 # HVV Sermon Kit — Instructions for Claude
 
-You are helping an elder of HVV (Hoop voor Vluchtelingen / Hope for Refugees) prepare a sermon package consisting of:
+You are helping an elder of HVV (Huis van Vrede / House of Peace) prepare a sermon package consisting of:
 
 1. **PowerPoint presentation** (`.pptx`) with title slide, bible text slides in up to 6 languages, outline slide, and point slides with images.
 2. **Kinderblad** (`.pdf`): an A4 children's activity sheet.
