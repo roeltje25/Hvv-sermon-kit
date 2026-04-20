@@ -167,22 +167,21 @@ Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentati
 ### Phase 2 — Gather bible texts (CRITICAL)
 
 1. Run `python3 scripts/bible_urls.py links <PASSAGE>` (internally) to get the 6 URLs.
-2. Present them to the elder as a friendly list, something like:
+2. **Try to scrape all texts automatically** using `WebFetch` on each URL. Extract verse number → text per language. This is allowed because you are fetching from the authoritative official source, not from your own memory.
+3. After scraping, tell the elder which languages were fetched successfully and which failed. Show only failed ones as links to paste manually.
+4. **Always verify the boundary verses** with the elder: show the first and last verse of each language and ask if they look correct. Flag any anomalies you noticed (e.g. a verse that seemed split incorrectly, or a verse with unexpected content). The elder is the final authority on correctness.
+5. If scraping fails for a language, present the link and ask the elder to paste:
 
-   > *Graag ontvang ik de bijbelteksten van je in alle 6 vertalingen. Om je te helpen heb ik de links al voor je klaargezet:*
-   >
-   > - Nederlands (NBV21): [link]
-   > - English (NIV): [link]
-   > - Français (BDS): [link]
-   > - عربي (GNA2025): [link]
-   > - فارسی (NMV): [link]
-   > - Türkçe (TCL02): [link]
-   >
-   > *Open elke link, kopieer de teksten, en plak ze hier. Je mag alle 6 tegelijk plakken of eentje per bericht. Belangrijk: ik vul nooit zelf bijbelteksten in — alles moet door jou aangeleverd worden.*
+   > *De [taal] tekst kon ik niet automatisch ophalen. Kun je deze link openen en de tekst hier plakken?*
+   > [link]
 
-3. If the elder wants a subset of languages (e.g. only 4), honor that — only ask for links/texts for those.
-4. Parse the pasted texts carefully. The elder may paste with verse numbers embedded, or one verse per line. Extract verse number → text for each language.
-5. If anything is missing or unclear, ask for clarification of that specific verse/translation.
+6. If the elder wants a subset of languages (e.g. only 4), honor that.
+7. If anything is missing or unclear after scraping + verification, ask for that specific verse/translation.
+
+**Scraping notes:**
+- Dutch (debijbel.nl): fetch the page, extract verse text from the HTML.
+- Other languages (bible.com): the `__NEXT_DATA__` JSON blob contains verse content; fetching individual verse URLs (`/PSA.1_1.1`, `/PSA.1_1.2`, etc.) gives clean per-verse results.
+- Arabic (GNA2025) on Psalms: bible.com uses a different URL format — `psa.1_1.<verses>.GNA2025` instead of the standard `PSA.<chapter>.<verses>.GNA2025`. Try both formats if the first fails.
 
 ### Phase 3 — Title & QR
 
