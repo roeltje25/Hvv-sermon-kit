@@ -1,0 +1,22 @@
+{
+  "title": "Kinderblad",
+  "subtitle": "Psalm 1 — Worden als een boom",
+  "wordsearch": {
+    "words":         ["BOOM", "WATER", "VRUCHT", "BLAD", "HEER", "KAF", "WET", "WIND", "NACHT", "DAG", "PAD", "GELUKKIG"],
+    "display_words": ["Boom", "Water", "Vrucht", "Blad", "Heer", "Kaf", "Wet", "Wind", "Nacht", "Dag", "Pad", "Gelukkig"],
+    "grid_size": 14
+  },
+  "fruit_tree": {
+    "section_title": "Welke vruchten horen bij de boom?",
+    "instruction": "Trek een lijn van de goede vruchten (groen) naar de boom",
+    "good_fruits": ["Geduld", "Goedheid", "Rust", "Vrede", "Vriendelijkheid", "Zelfbeheersing", "Liefde", "Trouw"],
+    "bad_fruits":  ["Ruzie", "Schreeuwen", "Slaan", "Jaloezie", "Liegen", "Pesten"]
+  },
+  "questions": {
+    "items": [
+      "Wanneer is het moeilijk om niet mee te doen met wat anderen doen?",
+      "Wat doe jij om dicht bij God te blijven?",
+      "Op welke manier wil jij groeien als een boom?"
+    ]
+  }
+}

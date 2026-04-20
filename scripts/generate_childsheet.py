@@ -8,6 +8,7 @@ Usage:  python3 generate_childsheet.py <config.json> <output.pdf>
 The config can include any combination of:
   - wordsearch:   {words: [...]}
   - story_order:  {images: [...]}  (2–8 images)
+  - fruit_tree:   {good_fruits: [...], bad_fruits: [...]}
   - questions:    {items: [...]}
 
 Sections that are absent from the config are simply not rendered.
@@ -285,6 +286,95 @@ def draw_story_order(c, W, top_y, config):
     return last_row_img_y - 0.15 * cm - 0.55 * cm
 
 
+def _draw_bare_tree(c, cx, bottom_y, height):
+    brown = HexColor("#6B4C35")
+    c.setStrokeColor(brown)
+    trunk_h = height * 0.32
+    branch_base = bottom_y + trunk_h
+
+    c.setLineWidth(4)
+    c.line(cx, bottom_y, cx, branch_base)
+
+    bh = height - trunk_h
+    c.setLineWidth(2.5)
+    c.line(cx, branch_base, cx, branch_base + bh)
+    c.line(cx, branch_base + bh * 0.25, cx - 1.6 * cm, branch_base + bh * 0.62)
+    c.line(cx, branch_base + bh * 0.25, cx + 1.6 * cm, branch_base + bh * 0.62)
+
+    c.setLineWidth(1.5)
+    c.line(cx - 1.6 * cm, branch_base + bh * 0.62, cx - 2.3 * cm, branch_base + bh * 0.85)
+    c.line(cx - 1.6 * cm, branch_base + bh * 0.62, cx - 0.8 * cm, branch_base + bh * 0.90)
+    c.line(cx + 1.6 * cm, branch_base + bh * 0.62, cx + 2.3 * cm, branch_base + bh * 0.85)
+    c.line(cx + 1.6 * cm, branch_base + bh * 0.62, cx + 0.8 * cm, branch_base + bh * 0.90)
+    c.line(cx, branch_base + bh * 0.50, cx - 1.1 * cm, branch_base + bh * 0.78)
+    c.line(cx, branch_base + bh * 0.50, cx + 1.1 * cm, branch_base + bh * 0.78)
+
+    c.setLineWidth(1.0)
+    c.line(cx - 2.3 * cm, branch_base + bh * 0.85, cx - 2.7 * cm, branch_base + bh * 0.97)
+    c.line(cx - 2.3 * cm, branch_base + bh * 0.85, cx - 1.8 * cm, branch_base + bh * 0.99)
+    c.line(cx + 2.3 * cm, branch_base + bh * 0.85, cx + 2.7 * cm, branch_base + bh * 0.97)
+    c.line(cx + 2.3 * cm, branch_base + bh * 0.85, cx + 1.8 * cm, branch_base + bh * 0.99)
+    c.line(cx, branch_base + bh, cx - 0.5 * cm, branch_base + bh * 1.05)
+    c.line(cx, branch_base + bh, cx + 0.5 * cm, branch_base + bh * 1.05)
+
+
+def draw_fruit_tree(c, W, top_y, config):
+    """Draw fruit-tree matching activity. Returns y-coordinate of bottom."""
+    P = PALETTE
+    good_fruits = config.get("good_fruits", [])
+    bad_fruits = config.get("bad_fruits", [])
+    section_title = config.get("section_title", "Welke vruchten horen bij de boom?")
+    instruction = config.get("instruction", "Trek een lijn van de goede vruchten naar de boom")
+    section_num = config.get("section_num", 2)
+
+    c.setFillColor(P["label"])
+    c.setFont("Times-BoldItalic", 12)
+    c.drawCentredString(W / 2, top_y, f"{section_num}. {section_title}")
+
+    c.setFillColor(P["label"])
+    c.setFont("Times-Italic", 9)
+    c.drawCentredString(W / 2, top_y - 0.4 * cm, instruction)
+
+    content_top = top_y - 1.0 * cm
+    section_h = 8.5 * cm
+
+    # Tree on left quarter
+    tree_cx = 4.2 * cm
+    tree_bottom = content_top - section_h + 0.3 * cm
+    _draw_bare_tree(c, tree_cx, tree_bottom, section_h - 0.3 * cm)
+
+    # Fruits on right side — mix good and bad, shuffle deterministically
+    all_fruits = [(w, True) for w in good_fruits] + [(w, False) for w in bad_fruits]
+    rng = random.Random(77)
+    rng.shuffle(all_fruits)
+
+    fruit_w = 3.5 * cm
+    fruit_h = 0.72 * cm
+    fruit_gap_y = 0.32 * cm
+    fruits_x_start = W / 2 + 0.2 * cm
+    col_w = fruit_w + 0.55 * cm
+    n = len(all_fruits)
+    rows_per_col = (n + 1) // 2
+
+    for i, (word, is_good) in enumerate(all_fruits):
+        col = i // rows_per_col
+        row = i % rows_per_col
+        x = fruits_x_start + col * col_w
+        y = content_top - row * (fruit_h + fruit_gap_y) - fruit_h
+
+        fill_color = HexColor("#C8DEB8") if is_good else HexColor("#E8C0BC")
+        c.setFillColor(fill_color)
+        c.setStrokeColor(P["border"])
+        c.setLineWidth(0.6)
+        c.ellipse(x, y, x + fruit_w, y + fruit_h, fill=1, stroke=1)
+
+        c.setFillColor(P["text"])
+        c.setFont("Times-Roman", 9)
+        c.drawCentredString(x + fruit_w / 2, y + 0.19 * cm, word)
+
+    return content_top - section_h
+
+
 def draw_questions(c, W, top_y, config):
     P = PALETTE
     items = config.get("items", [])
@@ -364,6 +454,13 @@ def main():
         cursor_y = draw_story_order(c, W, cursor_y, so_conf)
         section_num += 1
         cursor_y -= 0.5 * cm
+
+    if "fruit_tree" in config:
+        ft_conf = dict(config["fruit_tree"])
+        ft_conf["section_num"] = section_num
+        cursor_y = draw_fruit_tree(c, W, cursor_y, ft_conf)
+        section_num += 1
+        cursor_y -= 0.7 * cm
 
     if "questions" in config and config["questions"].get("items"):
         q_conf = dict(config["questions"])
