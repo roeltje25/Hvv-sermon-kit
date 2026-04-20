@@ -134,6 +134,51 @@
 
     .notice.show { display: block; }
 
+    .prompt-box {
+      display: none;
+      margin-top: 1.2rem;
+      background: #EDE8DC;
+      border: 1.5px solid #C8B99A;
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+    }
+
+    .prompt-box.show { display: block; }
+
+    .prompt-box p {
+      font-size: 0.8rem;
+      color: #6B4C35;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
+    .prompt-box textarea {
+      width: 100%;
+      font-family: Georgia, serif;
+      font-size: 0.88rem;
+      color: #2C1F13;
+      background: #F5F0E8;
+      border: 1px solid #C8B99A;
+      border-radius: 4px;
+      padding: 0.5rem;
+      resize: none;
+      height: 4.5rem;
+    }
+
+    .copy-btn {
+      margin-top: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: #6B4C35;
+      color: #F5F0E8;
+      border: none;
+      border-radius: 4px;
+      font-family: Georgia, serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover { background: #3D2B1F; }
+
     footer {
       margin-top: 3rem;
       font-size: 0.8rem;
@@ -184,7 +229,13 @@
     </ol>
 
     <button class="btn" onclick="start()">⬇ Download kit &amp; open Claude</button>
-    <p class="notice" id="notice">✓ Kit gedownload en startprompt gekopieerd — Claude.ai is geopend in een nieuw tabblad.</p>
+    <p class="notice" id="notice">✓ Kit gedownload — Claude.ai is geopend in een nieuw tabblad.</p>
+
+    <div class="prompt-box" id="prompt-box">
+      <p>Kopieer deze tekst en plak hem in Claude (stap 3):</p>
+      <textarea id="prompt-text" readonly></textarea>
+      <button class="copy-btn" onclick="copyPrompt()">Kopieer tekst</button>
+    </div>
   </div>
 
   <footer>HVV — Hoop voor Vluchtelingen</footer>
@@ -194,8 +245,26 @@
 
     const ZIP_URL = 'https://github.com/roeltje25/Hvv-sermon-kit/archive/refs/heads/main.zip';
 
+    function copyPrompt() {
+      const ta = document.getElementById('prompt-text');
+      ta.select();
+      navigator.clipboard.writeText(PROMPT).catch(() => {
+        document.execCommand('copy');
+      });
+      document.querySelector('.copy-btn').textContent = '✓ Gekopieerd!';
+      setTimeout(() => document.querySelector('.copy-btn').textContent = 'Kopieer tekst', 2000);
+    }
+
     function start() {
-      // 1. Download zip
+      // 1. Copy prompt first (while page is still focused)
+      navigator.clipboard.writeText(PROMPT).catch(() => {});
+
+      // 2. Show prompt text as visible fallback
+      document.getElementById('prompt-text').value = PROMPT;
+      document.getElementById('prompt-box').classList.add('show');
+      document.getElementById('notice').classList.add('show');
+
+      // 3. Download zip
       const a = document.createElement('a');
       a.href = ZIP_URL;
       a.download = 'hvv-sermon-kit.zip';
@@ -203,24 +272,8 @@
       a.click();
       document.body.removeChild(a);
 
-      // 2. Copy prompt to clipboard
-      navigator.clipboard.writeText(PROMPT).catch(() => {
-        // Fallback for browsers that block clipboard
-        const ta = document.createElement('textarea');
-        ta.value = PROMPT;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-      });
-
-      // 3. Open Claude.ai
-      window.open('https://claude.ai/new', '_blank');
-
-      // 4. Show confirmation
-      document.getElementById('notice').classList.add('show');
+      // 4. Open Claude.ai (slight delay so clipboard write completes first)
+      setTimeout(() => window.open('https://claude.ai/new', '_blank'), 300);
     }
   </script>
 
