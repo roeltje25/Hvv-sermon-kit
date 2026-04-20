@@ -287,100 +287,181 @@ def draw_story_order(c, W, top_y, config):
 
 
 def _draw_bare_tree(c, cx, bottom_y, height):
-    """Coloring-book style tree: outlined trunk + cloud canopy, white fill."""
-    brown = HexColor("#6B4C35")
-    trunk_h = height * 0.36
+    """Detailed coloring-book tree: thick outlines, white fill, bark + leaf texture."""
+    brown = HexColor("#2C1F13")
+    lw_main = 2.2
+    lw_detail = 0.9
+
+    trunk_h = height * 0.34
     canopy_base = bottom_y + trunk_h
-
-    # Trunk as outlined trapezoid (white fill so it covers the canopy bottom)
-    tw_bot = 0.55 * cm
-    tw_top = 0.32 * cm
-    trunk_path = c.beginPath()
-    trunk_path.moveTo(cx - tw_bot, bottom_y)
-    trunk_path.lineTo(cx + tw_bot, bottom_y)
-    trunk_path.lineTo(cx + tw_top, canopy_base)
-    trunk_path.lineTo(cx - tw_top, canopy_base)
-    trunk_path.close()
-    c.setFillColor(HexColor("#FFFFFF"))
-    c.setStrokeColor(brown)
-    c.setLineWidth(1.4)
-    c.drawPath(trunk_path, fill=1, stroke=1)
-
-    # Bark texture lines
-    c.setLineWidth(0.5)
-    c.setStrokeColor(brown)
-    c.line(cx - tw_bot * 0.4, bottom_y + trunk_h * 0.18,
-           cx + tw_bot * 0.6, bottom_y + trunk_h * 0.32)
-    c.line(cx - tw_bot * 0.6, bottom_y + trunk_h * 0.52,
-           cx + tw_bot * 0.3, bottom_y + trunk_h * 0.65)
-
-    # Cloud-like canopy using bezier curves
     bh = height - trunk_h
-    cy = canopy_base  # base of canopy
-    # Control points tuned for a round, bumpy cloud crown
-    canopy = c.beginPath()
-    canopy.moveTo(cx - 0.6 * cm, cy)
-    canopy.curveTo(cx - 2.8 * cm, cy + 0.3 * cm,
-                   cx - 3.2 * cm, cy + bh * 0.45,
-                   cx - 2.4 * cm, cy + bh * 0.62)
-    canopy.curveTo(cx - 3.0 * cm, cy + bh * 0.80,
-                   cx - 2.2 * cm, cy + bh * 1.05,
-                   cx - 1.0 * cm, cy + bh * 0.90)
-    canopy.curveTo(cx - 0.8 * cm, cy + bh * 1.15,
-                   cx + 0.8 * cm, cy + bh * 1.15,
-                   cx + 1.0 * cm, cy + bh * 0.90)
-    canopy.curveTo(cx + 2.2 * cm, cy + bh * 1.05,
-                   cx + 3.0 * cm, cy + bh * 0.80,
-                   cx + 2.4 * cm, cy + bh * 0.62)
-    canopy.curveTo(cx + 3.2 * cm, cy + bh * 0.45,
-                   cx + 2.8 * cm, cy + 0.3 * cm,
-                   cx + 0.6 * cm, cy)
-    canopy.close()
-    c.setFillColor(HexColor("#FFFFFF"))
-    c.setStrokeColor(brown)
-    c.setLineWidth(1.6)
-    c.drawPath(canopy, fill=1, stroke=1)
 
-    # Redraw trunk on top so canopy doesn't cover it
+    # --- Grass tufts at base ---
+    c.setStrokeColor(brown)
+    c.setLineWidth(1.3)
+    for dx in [-1.4, -1.0, -0.6, -0.2, 0.2, 0.6, 1.0, 1.4]:
+        gx = cx + dx * cm
+        c.line(gx, bottom_y, gx - 0.07 * cm, bottom_y + 0.22 * cm)
+        c.line(gx, bottom_y, gx + 0.07 * cm, bottom_y + 0.22 * cm)
+
+    # --- Canopy (drawn first so trunk paints over its base) ---
+    # Large rounded shape with small leaf-bumps along the edge
+    cn = c.beginPath()
+    # Bottom entry points
+    cn.moveTo(cx - 0.65 * cm, canopy_base + 0.05 * cm)
+    # Lower-left curve
+    cn.curveTo(cx - 2.0 * cm, canopy_base - 0.1 * cm,
+               cx - 3.2 * cm, canopy_base + 0.5 * cm,
+               cx - 3.0 * cm, canopy_base + bh * 0.30)
+    # Left leaf bump
+    cn.curveTo(cx - 3.6 * cm, canopy_base + bh * 0.38,
+               cx - 3.7 * cm, canopy_base + bh * 0.58,
+               cx - 3.2 * cm, canopy_base + bh * 0.63)
+    # Upper-left bump
+    cn.curveTo(cx - 3.1 * cm, canopy_base + bh * 0.80,
+               cx - 2.4 * cm, canopy_base + bh * 0.95,
+               cx - 1.6 * cm, canopy_base + bh * 0.88)
+    # Top-left bump
+    cn.curveTo(cx - 1.4 * cm, canopy_base + bh * 1.08,
+               cx - 0.5 * cm, canopy_base + bh * 1.18,
+               cx,             canopy_base + bh * 1.12)
+    # Top-right bump
+    cn.curveTo(cx + 0.5 * cm, canopy_base + bh * 1.18,
+               cx + 1.4 * cm, canopy_base + bh * 1.08,
+               cx + 1.6 * cm, canopy_base + bh * 0.88)
+    # Upper-right bump
+    cn.curveTo(cx + 2.4 * cm, canopy_base + bh * 0.95,
+               cx + 3.1 * cm, canopy_base + bh * 0.80,
+               cx + 3.2 * cm, canopy_base + bh * 0.63)
+    # Right leaf bump
+    cn.curveTo(cx + 3.7 * cm, canopy_base + bh * 0.58,
+               cx + 3.6 * cm, canopy_base + bh * 0.38,
+               cx + 3.0 * cm, canopy_base + bh * 0.30)
+    # Lower-right curve
+    cn.curveTo(cx + 3.2 * cm, canopy_base + 0.5 * cm,
+               cx + 2.0 * cm, canopy_base - 0.1 * cm,
+               cx + 0.65 * cm, canopy_base + 0.05 * cm)
+    cn.close()
     c.setFillColor(HexColor("#FFFFFF"))
     c.setStrokeColor(brown)
-    c.setLineWidth(1.4)
-    c.drawPath(trunk_path, fill=1, stroke=1)
-    c.setLineWidth(0.5)
-    c.line(cx - tw_bot * 0.4, bottom_y + trunk_h * 0.18,
-           cx + tw_bot * 0.6, bottom_y + trunk_h * 0.32)
-    c.line(cx - tw_bot * 0.6, bottom_y + trunk_h * 0.52,
-           cx + tw_bot * 0.3, bottom_y + trunk_h * 0.65)
+    c.setLineWidth(lw_main)
+    c.drawPath(cn, fill=1, stroke=1)
+
+    # Interior leaf detail lines (simple curved strokes inside canopy)
+    c.setStrokeColor(brown)
+    c.setLineWidth(lw_detail)
+    leaf_hints = [
+        (cx - 1.6 * cm, canopy_base + bh * 0.28, cx - 0.9 * cm, canopy_base + bh * 0.45),
+        (cx + 0.5 * cm, canopy_base + bh * 0.22, cx + 1.3 * cm, canopy_base + bh * 0.40),
+        (cx - 0.4 * cm, canopy_base + bh * 0.55, cx + 0.5 * cm, canopy_base + bh * 0.70),
+        (cx - 2.0 * cm, canopy_base + bh * 0.55, cx - 1.1 * cm, canopy_base + bh * 0.68),
+        (cx + 1.4 * cm, canopy_base + bh * 0.52, cx + 2.2 * cm, canopy_base + bh * 0.65),
+        (cx - 0.8 * cm, canopy_base + bh * 0.78, cx + 0.2 * cm, canopy_base + bh * 0.92),
+        (cx + 0.8 * cm, canopy_base + bh * 0.35, cx + 1.5 * cm, canopy_base + bh * 0.50),
+    ]
+    for x1, y1, x2, y2 in leaf_hints:
+        lp = c.beginPath()
+        mx, my = (x1 + x2) / 2, (y1 + y2) / 2
+        lp.moveTo(x1, y1)
+        lp.curveTo(mx - 0.1 * cm, my + 0.15 * cm, mx + 0.1 * cm, my + 0.15 * cm, x2, y2)
+        c.drawPath(lp, fill=0, stroke=1)
+
+    # --- Trunk (on top of canopy) ---
+    tw_bot = 0.60 * cm
+    tw_top = 0.35 * cm
+    tp = c.beginPath()
+    tp.moveTo(cx - tw_bot, bottom_y)
+    tp.curveTo(cx - tw_bot - 0.08 * cm, bottom_y + trunk_h * 0.4,
+               cx - tw_top - 0.04 * cm, bottom_y + trunk_h * 0.75,
+               cx - tw_top, canopy_base)
+    tp.lineTo(cx + tw_top, canopy_base)
+    tp.curveTo(cx + tw_top + 0.04 * cm, bottom_y + trunk_h * 0.75,
+               cx + tw_bot + 0.08 * cm, bottom_y + trunk_h * 0.4,
+               cx + tw_bot, bottom_y)
+    tp.close()
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setStrokeColor(brown)
+    c.setLineWidth(lw_main)
+    c.drawPath(tp, fill=1, stroke=1)
+
+    # Bark texture on trunk
+    c.setLineWidth(lw_detail)
+    for frac, x_off in [(0.22, 0.3), (0.48, -0.2), (0.72, 0.15)]:
+        y_b = bottom_y + trunk_h * frac
+        w_b = tw_bot + (tw_top - tw_bot) * frac
+        c.line(cx - w_b * 0.65 + x_off * cm, y_b,
+               cx + w_b * 0.50 + x_off * cm, y_b + 0.07 * cm)
+    # Knot
+    kx, ky = cx + 0.05 * cm, bottom_y + trunk_h * 0.58
+    kp = c.beginPath()
+    kp.moveTo(kx, ky)
+    kp.curveTo(kx + 0.18 * cm, ky + 0.10 * cm,
+               kx + 0.18 * cm, ky - 0.10 * cm, kx, ky)
+    c.drawPath(kp, fill=0, stroke=1)
 
 
 def _draw_fruit_shape(c, cx, cy, r, label, fill_color, brown):
-    """Coloring-book apple: circle + stem + leaf + label."""
-    # Apple body
+    """Detailed coloring-book apple: heart-top body, highlight, curved stem, leafed, label below."""
+    lw = 1.8
+
+    # Apple body — slight indentation at top for heart shape
+    body = c.beginPath()
+    body.moveTo(cx, cy + r * 0.88)
+    body.curveTo(cx + r * 0.28, cy + r * 1.02,
+                 cx + r,        cy + r * 0.55,
+                 cx + r,        cy)
+    body.curveTo(cx + r,        cy - r,
+                 cx - r,        cy - r,
+                 cx - r,        cy)
+    body.curveTo(cx - r,        cy + r * 0.55,
+                 cx - r * 0.28, cy + r * 1.02,
+                 cx,            cy + r * 0.88)
+    body.close()
     c.setFillColor(fill_color)
     c.setStrokeColor(brown)
-    c.setLineWidth(1.2)
-    c.circle(cx, cy, r, fill=1, stroke=1)
+    c.setLineWidth(lw)
+    c.drawPath(body, fill=1, stroke=1)
 
-    # Stem
-    c.setLineWidth(1.0)
-    c.line(cx, cy + r, cx + 0.1 * cm, cy + r + 0.35 * cm)
-
-    # Leaf (small bezier teardrop)
-    lx, ly = cx + 0.1 * cm, cy + r + 0.2 * cm
-    leaf = c.beginPath()
-    leaf.moveTo(lx, ly)
-    leaf.curveTo(lx + 0.45 * cm, ly + 0.35 * cm,
-                 lx + 0.55 * cm, ly - 0.1 * cm,
-                 lx, ly)
-    c.setFillColor(HexColor("#B8D4A0"))
+    # Highlight (small oval, upper-right)
+    c.setFillColor(HexColor("#FFFFFF"))
     c.setStrokeColor(brown)
-    c.setLineWidth(0.7)
-    c.drawPath(leaf, fill=1, stroke=1)
+    c.setLineWidth(0.5)
+    hx, hy = cx + r * 0.30, cy + r * 0.30
+    c.ellipse(hx - r * 0.22, hy - r * 0.14,
+              hx + r * 0.22, hy + r * 0.14, fill=1, stroke=1)
 
-    # Label
+    # Curved stem
+    stem = c.beginPath()
+    stem.moveTo(cx, cy + r * 0.88)
+    stem.curveTo(cx + r * 0.25, cy + r + 0.12 * cm,
+                 cx + r * 0.20, cy + r + 0.28 * cm,
+                 cx + r * 0.10, cy + r + 0.38 * cm)
+    c.setStrokeColor(brown)
+    c.setFillColor(HexColor("#FFFFFF"))
+    c.setLineWidth(1.2)
+    c.drawPath(stem, fill=0, stroke=1)
+
+    # Leaf
+    lbx = cx + r * 0.10
+    lby = cy + r + 0.22 * cm
+    leaf = c.beginPath()
+    leaf.moveTo(lbx, lby)
+    leaf.curveTo(lbx + 0.42 * cm, lby + 0.30 * cm,
+                 lbx + 0.55 * cm, lby + 0.00 * cm,
+                 lbx + 0.18 * cm, lby - 0.12 * cm)
+    leaf.close()
+    c.setFillColor(HexColor("#D4EDB8"))
+    c.setStrokeColor(brown)
+    c.setLineWidth(0.8)
+    c.drawPath(leaf, fill=1, stroke=1)
+    # Leaf vein
+    c.setLineWidth(0.5)
+    c.line(lbx, lby, lbx + 0.28 * cm, lby + 0.10 * cm)
+
+    # Label below apple
     c.setFillColor(HexColor("#2C1F13"))
     c.setFont("Times-Roman", 7.5)
-    c.drawCentredString(cx, cy - 0.13 * cm, label)
+    c.drawCentredString(cx, cy - r - 0.22 * cm, label)
 
 
 def draw_fruit_tree(c, W, top_y, config):
@@ -401,37 +482,39 @@ def draw_fruit_tree(c, W, top_y, config):
     c.drawCentredString(W / 2, top_y - 0.4 * cm, instruction)
 
     content_top = top_y - 1.0 * cm
-    section_h = 9.0 * cm
-    brown = HexColor("#6B4C35")
+    brown = HexColor("#2C1F13")
 
-    # Tree on left side
-    tree_cx = 4.5 * cm
-    tree_bottom = content_top - section_h + 0.5 * cm
-    _draw_bare_tree(c, tree_cx, tree_bottom, section_h - 0.5 * cm)
-
-    # Fruits: apple shapes in 3 columns on the right
+    # Layout: 4 columns of apples on the right half
     all_fruits = [(w, True) for w in good_fruits] + [(w, False) for w in bad_fruits]
     rng = random.Random(77)
     rng.shuffle(all_fruits)
 
-    r = 0.62 * cm          # apple radius
-    gap_x = 0.35 * cm
-    gap_y = 0.45 * cm
-    fruits_x0 = W / 2 + 0.3 * cm
-    cols = 3
-    col_w = 2 * r + gap_x
+    r = 0.40 * cm
+    stem_leaf_h = 0.50 * cm   # height above circle center for stem+leaf
+    label_h = 0.28 * cm       # text below circle
+    row_h = 2 * r + stem_leaf_h + label_h + 0.30 * cm  # gap between rows
+    cols = 4
+    col_w = 1.50 * cm
     n = len(all_fruits)
     rows = (n + cols - 1) // cols
+
+    fruits_x0 = W / 2 + 0.3 * cm
+    first_cy = content_top - stem_leaf_h - r
 
     for i, (word, is_good) in enumerate(all_fruits):
         col = i % cols
         row = i // cols
         cx_f = fruits_x0 + col * col_w + r
-        # +0.4cm to leave room for stem+leaf above
-        cy_f = content_top - 0.4 * cm - row * (2 * r + gap_y + 0.4 * cm) - r
-
+        cy_f = first_cy - row * row_h
         fill_color = HexColor("#D4EDBC") if is_good else HexColor("#F0C8C4")
         _draw_fruit_shape(c, cx_f, cy_f, r, word, fill_color, brown)
+
+    section_h = stem_leaf_h + rows * row_h + 0.1 * cm
+
+    # Tree fills the left half at the same height
+    tree_cx = 4.5 * cm
+    tree_bottom = content_top - section_h + 0.4 * cm
+    _draw_bare_tree(c, tree_cx, tree_bottom, section_h - 0.4 * cm)
 
     return content_top - section_h
 
