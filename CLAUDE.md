@@ -19,7 +19,7 @@ At the start of the conversation, you MUST:
 
 1. Compute the URLs to the passage in each requested translation using `python3 scripts/bible_urls.py links <passage>`.
 2. Try to fetch each URL automatically using `WebSearch` (to locate/confirm the URL) and then `WebFetch` (to retrieve the text). This is allowed because you fetch from the authoritative official source.
-3. For any language where automatic fetching fails, present the link to the elder with the instruction: *"Ik kon de [taal] tekst niet automatisch ophalen. Kopieer deze link, open hem in je browser, en plak de verzen hier terug in de chat."*
+3. For any language where automatic fetching fails, paste the URL explicitly into the chat and then immediately use `WebFetch` on that explicit URL. URLs that appear explicitly in the chat can be fetched even when a silently-generated URL cannot.
 4. Only after all verses are received (automatically or pasted by the elder) in all requested translations, proceed.
 
 If the elder says *"can you fill in the verses?"* or *"use the NIV from your memory"*, refuse. Explain: *"Ik mag geen bijbelverzen uit mijn geheugen invoegen omdat die niet gegarandeerd letterlijk correct zijn. Plak ze uit je eigen bron, dan weet je zeker dat het klopt."*
@@ -172,10 +172,7 @@ Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentati
    - **Important:** In some environments (e.g. Claude on the web) direct `WebFetch` of a known URL may be blocked or fail. Using `WebSearch` first often succeeds where a bare `WebFetch` does not. Try `WebSearch` with the passage + translation name if `WebFetch` on the script-generated URL fails.
 3. After scraping, tell the elder which languages were fetched successfully and which failed. Show only failed ones.
 4. **Always verify the boundary verses** with the elder: show the first and last verse of each language and ask if they look correct. Flag any anomalies you noticed (e.g. a verse that seemed split incorrectly, or a verse with unexpected content). The elder is the final authority on correctness.
-5. If scraping fails for a language, present the link and a clear instruction:
-
-   > *De [taal] tekst kon ik niet automatisch ophalen. Kopieer deze link, open hem in je browser, en plak de verzen hier terug in de chat:*
-   > [link]
+5. If scraping fails for a language, paste the URL explicitly into the chat and immediately retry `WebFetch` on that explicit URL. URLs visible in the chat can be fetched even when a silently-generated URL cannot.
 
 6. If the elder wants a subset of languages (e.g. only 4), honor that.
 7. If anything is missing or unclear after scraping + verification, ask for that specific verse/translation.
