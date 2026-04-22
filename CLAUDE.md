@@ -237,7 +237,20 @@ Run:
 node scripts/generate_presentation.js <config.json> <bible_texts.json> <output.pptx>
 ```
 
-Present the `.pptx` to the elder. Offer a preview (convert to PDF + images for visual QA).
+**After generating, verify the bounding boxes of the Bible text cards:**
+
+Convert the bible text slides to images and inspect them visually:
+```
+libreoffice --headless --convert-to png output/<file>.pptx --outdir output/preview/
+```
+Check each bible text slide: does the text in every language card fit within its box? The script uses fixed-height cards with `wrap: true` but no auto-shrink — long verses will be silently clipped.
+
+If any card overflows:
+- Tell the elder in plain Dutch which slide and language is too full.
+- Suggest redistributing: fewer verses on that slide, or splitting the verse group.
+- Regenerate after the elder confirms the new distribution.
+
+Present the `.pptx` to the elder only after bounding boxes have been verified.
 
 ### Phase 7 — Kinderblad
 
