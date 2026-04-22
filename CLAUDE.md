@@ -18,8 +18,12 @@ This repository contains scripts that produce these outputs from configuration f
 At the start of the conversation, you MUST:
 
 1. Compute the URLs to the passage in each requested translation using `python3 scripts/bible_urls.py links <passage>`.
-2. Present these URLs to the elder and ask them to open each link and paste the exact verses back to you.
-3. Only after all verses are received in all requested translations, proceed.
+2. Try to fetch each URL automatically using `WebFetch`. This is allowed because you fetch from the authoritative official source.
+3. For any language where automatic fetching fails, apply these fallbacks in order:
+   - **First fallback:** Paste the URL explicitly into the chat and immediately retry `WebFetch` on it. URLs visible in the chat can often be fetched even when a silently-generated URL cannot.
+   - **Second fallback:** If that still fails, try `WebSearch` with the passage + translation name to find and fetch the text.
+   - **Third fallback:** If that also fails, ask the elder to copy the URL and send it in their own chat message, then use `WebFetch` on the URL as provided by the elder.
+4. Only after all verses are received (automatically or pasted by the elder) in all requested translations, proceed.
 
 If the elder says *"can you fill in the verses?"* or *"use the NIV from your memory"*, refuse. Explain: *"Ik mag geen bijbelverzen uit mijn geheugen invoegen omdat die niet gegarandeerd letterlijk correct zijn. Plak ze uit je eigen bron, dan weet je zeker dat het klopt."*
 
@@ -168,12 +172,12 @@ Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentati
 
 1. Run `python3 scripts/bible_urls.py links <PASSAGE>` (internally) to get the 6 URLs.
 2. **Try to scrape all texts automatically** using `WebFetch` on each URL. Extract verse number → text per language. This is allowed because you are fetching from the authoritative official source, not from your own memory.
-3. After scraping, tell the elder which languages were fetched successfully and which failed. Show only failed ones as links to paste manually.
+3. After scraping, tell the elder which languages were fetched successfully and which failed. Show only failed ones.
 4. **Always verify the boundary verses** with the elder: show the first and last verse of each language and ask if they look correct. Flag any anomalies you noticed (e.g. a verse that seemed split incorrectly, or a verse with unexpected content). The elder is the final authority on correctness.
-5. If scraping fails for a language, present the link and ask the elder to paste:
-
-   > *De [taal] tekst kon ik niet automatisch ophalen. Kun je deze link openen en de tekst hier plakken?*
-   > [link]
+5. If scraping fails for a language, apply these fallbacks in order:
+   1. Paste the URL into the chat and retry `WebFetch` on it.
+   2. If that still fails, try `WebSearch` with the passage + translation name to find and fetch the text.
+   3. If that also fails, ask the elder: *"Kun je deze link kopiëren en in een eigen berichtje hier plakken? Dan haal ik de tekst zelf op."*
 
 6. If the elder wants a subset of languages (e.g. only 4), honor that.
 7. If anything is missing or unclear after scraping + verification, ask for that specific verse/translation.
@@ -233,21 +237,47 @@ Run:
 node scripts/generate_presentation.js <config.json> <bible_texts.json> <output.pptx>
 ```
 
-Present the `.pptx` to the elder. Offer a preview (convert to PDF + images for visual QA).
+**After generating, verify the bounding boxes of the Bible text cards:**
+
+Convert the bible text slides to images and inspect them visually:
+```
+libreoffice --headless --convert-to png output/<file>.pptx --outdir output/preview/
+```
+Check each bible text slide: does the text in every language card fit within its box? The script uses fixed-height cards with `wrap: true` but no auto-shrink — long verses will be silently clipped.
+
+If any card overflows:
+- Tell the elder in plain Dutch which slide and language is too full.
+- Suggest redistributing: fewer verses on that slide, or splitting the verse group.
+- Regenerate after the elder confirms the new distribution.
+
+Present the `.pptx` to the elder only after bounding boxes have been verified.
 
 ### Phase 7 — Kinderblad
 
-Start a separate conversation about the children's sheet. **Every sermon gets its own custom activities** — do not reuse the same sections by default. Think about what fits this specific passage and theme.
+Start a separate conversation about the children's sheet. **Every sermon gets its own custom activities** — do not reuse the same sections by default.
 
-Ask: *"Voor het kinderblad: welke opdrachten passen bij deze preek? Ik kan een woordzoeker maken, een verhaalvolgorde met plaatjes, open vragen, of een creatieve tekenactiviteit (zoals een kleurplaat, verbind-de-punten, invuloefening, of een matchingopdracht). Wat spreekt je aan voor dit verhaal?"*
+**First: make a concrete proposal based on the passage and theme.** Think about what fits this specific story — the characters, the action, the central message — and suggest 2–3 activities that match it naturally. Present your proposal in plain Dutch, briefly explain why each activity fits, and invite the elder to react:
+
+> *"Voor het kinderblad bij dit verhaal stel ik voor: [activiteit 1] omdat [reden], en [activiteit 2] omdat [reden]. Wat vind je ervan? Wil je iets aanpassen of een andere combinatie proberen?"*
+
+Use the passage and theme as your guide when choosing:
+
+| Passage type | Activities that often fit well |
+|---|---|
+| Verhaal met duidelijke scènes (bijv. verloren zoon, Jaïrus) | Verhaalvolgorde, woordzoeker, open vragen |
+| Passages over karakter/keuzes/groei (bijv. Galaten 5, Spreuken) | Vruchtenboom, open vragen |
+| Passages met veel personen of plaatsen | Woordzoeker, matchingopdracht |
+| Passages met één centrale handeling | Kleurplaat van die scène, invuloefening |
+
+Have a short back-and-forth with the elder until you land on a combination both find fitting. Don't rush to generate — it's fine to go through a round or two of suggestions.
 
 **Available sections (combine freely):**
 
-- **Woordzoeker** (`wordsearch`): ask for ~12–16 words from the passage. Short words work best.
-- **Verhaalvolgorde** (`story_order`): ask for 4–6 images showing the story's scenes.
-- **Vruchtenboom** (`fruit_tree`): bare tree + apple-shaped words (good/bad), children draw lines to the tree. Works well for passages about growth, choices, or character.
-- **Vragen** (`questions`): brainstorm 2–4 open questions that help children reflect on the theme.
-- **Andere activiteiten**: if the elder wants something else (kleurplaat van een scène, verbind-de-punten, invuloefening), implement it as a new `draw_*` function in `generate_childsheet.py` following the same coloring-book style.
+- **Woordzoeker** (`wordsearch`): good for narrative passages with distinct names/places. Ask for ~12–16 words; short words work best.
+- **Verhaalvolgorde** (`story_order`): great when the passage has 4–6 clear consecutive scenes. Ask for images showing each scene.
+- **Vruchtenboom** (`fruit_tree`): bare tree + apple-shaped words (good/bad character traits or choices), children draw lines to the tree. Works well for passages about growth, choices, or character.
+- **Vragen** (`questions`): brainstorm 2–4 open questions that help children reflect on the theme. Works for almost any passage as a closing section.
+- **Andere activiteiten**: if the elder or you think something else fits better (kleurplaat van een scène, verbind-de-punten, invuloefening, matchingopdracht), implement it as a new `draw_*` function in `generate_childsheet.py` following the same coloring-book style.
 
 **Style rule for all drawn elements:** Thick outlines (≥ 2pt), white fill so children can color in, clear recognizable shapes. No abstract line art.
 
