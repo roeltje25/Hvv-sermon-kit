@@ -254,17 +254,30 @@ Present the `.pptx` to the elder only after bounding boxes have been verified.
 
 ### Phase 7 — Kinderblad
 
-Start a separate conversation about the children's sheet. **Every sermon gets its own custom activities** — do not reuse the same sections by default. Think about what fits this specific passage and theme.
+Start a separate conversation about the children's sheet. **Every sermon gets its own custom activities** — do not reuse the same sections by default.
 
-Ask: *"Voor het kinderblad: welke opdrachten passen bij deze preek? Ik kan een woordzoeker maken, een verhaalvolgorde met plaatjes, open vragen, of een creatieve tekenactiviteit (zoals een kleurplaat, verbind-de-punten, invuloefening, of een matchingopdracht). Wat spreekt je aan voor dit verhaal?"*
+**First: make a concrete proposal based on the passage and theme.** Think about what fits this specific story — the characters, the action, the central message — and suggest 2–3 activities that match it naturally. Present your proposal in plain Dutch, briefly explain why each activity fits, and invite the elder to react:
+
+> *"Voor het kinderblad bij dit verhaal stel ik voor: [activiteit 1] omdat [reden], en [activiteit 2] omdat [reden]. Wat vind je ervan? Wil je iets aanpassen of een andere combinatie proberen?"*
+
+Use the passage and theme as your guide when choosing:
+
+| Passage type | Activities that often fit well |
+|---|---|
+| Verhaal met duidelijke scènes (bijv. verloren zoon, Jaïrus) | Verhaalvolgorde, woordzoeker, open vragen |
+| Passages over karakter/keuzes/groei (bijv. Galaten 5, Spreuken) | Vruchtenboom, open vragen |
+| Passages met veel personen of plaatsen | Woordzoeker, matchingopdracht |
+| Passages met één centrale handeling | Kleurplaat van die scène, invuloefening |
+
+Have a short back-and-forth with the elder until you land on a combination both find fitting. Don't rush to generate — it's fine to go through a round or two of suggestions.
 
 **Available sections (combine freely):**
 
-- **Woordzoeker** (`wordsearch`): ask for ~12–16 words from the passage. Short words work best.
-- **Verhaalvolgorde** (`story_order`): ask for 4–6 images showing the story's scenes.
-- **Vruchtenboom** (`fruit_tree`): bare tree + apple-shaped words (good/bad), children draw lines to the tree. Works well for passages about growth, choices, or character.
-- **Vragen** (`questions`): brainstorm 2–4 open questions that help children reflect on the theme.
-- **Andere activiteiten**: if the elder wants something else (kleurplaat van een scène, verbind-de-punten, invuloefening), implement it as a new `draw_*` function in `generate_childsheet.py` following the same coloring-book style.
+- **Woordzoeker** (`wordsearch`): good for narrative passages with distinct names/places. Ask for ~12–16 words; short words work best.
+- **Verhaalvolgorde** (`story_order`): great when the passage has 4–6 clear consecutive scenes. Ask for images showing each scene.
+- **Vruchtenboom** (`fruit_tree`): bare tree + apple-shaped words (good/bad character traits or choices), children draw lines to the tree. Works well for passages about growth, choices, or character.
+- **Vragen** (`questions`): brainstorm 2–4 open questions that help children reflect on the theme. Works for almost any passage as a closing section.
+- **Andere activiteiten**: if the elder or you think something else fits better (kleurplaat van een scène, verbind-de-punten, invuloefening, matchingopdracht), implement it as a new `draw_*` function in `generate_childsheet.py` following the same coloring-book style.
 
 **Style rule for all drawn elements:** Thick outlines (≥ 2pt), white fill so children can color in, clear recognizable shapes. No abstract line art.
 
