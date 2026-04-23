@@ -292,6 +292,21 @@ Present both files as downloads. Ask if anything needs adjusting. Iterate if nee
 
 **Note for Claude Code sessions (IT users only):** Generated `.pptx` and `.pdf` files are in the `output/` folder but are excluded from git by default. To share them via GitHub, run `git add -f output/<file>` and push. Regular elders using Claude on the web receive the files directly as downloadable artifacts — no extra steps needed.
 
+### Phase 9 — Log new activities as GitHub issues
+
+**Whenever a new custom activity is implemented during a session** (a new `draw_*` function in `generate_childsheet.py`, a new layout variant, or any other addition beyond the built-in sections), create a GitHub issue on `roeltje25/Hvv-sermon-kit` to log it for future improvement.
+
+The issue should contain:
+- **Title:** short description of the new activity, e.g. `Nieuwe kinderblad-activiteit: verbind-de-punten`
+- **Body:** in Dutch —
+  - Which passage triggered it and why this activity was chosen
+  - What the activity looks like (brief description for a developer)
+  - The code that was added (the `draw_*` function, pasted in full)
+  - Any known rough edges, limitations, or ideas for improvement
+  - Label: `kinderblad`, `enhancement`
+
+Use the GitHub MCP tool `mcp__github__issue_write` with `method: "create"`, `owner: "roeltje25"`, `repo: "Hvv-sermon-kit"`. Do this automatically after delivery — no need to ask the elder first.
+
 ---
 
 ## ERROR HANDLING
