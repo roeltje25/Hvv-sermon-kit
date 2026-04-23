@@ -64,97 +64,22 @@ Dependencies (already installable in a typical Claude session):
 
 ## PASSAGE FORMAT
 
-Throughout the configs, passages use the OSIS-like format: `BOOK.CHAPTER.VERSES`
-
-Examples:
-- `MAT.9.18-26` — Matthew 9:18–26
-- `LUK.15.11-32` — Luke 15:11–32
-- `JHN.3.16` — John 3:16
-
-Book codes: `GEN, EXO, LEV, NUM, DEU, JOS, JDG, RUT, 1SA, 2SA, 1KI, 2KI, 1CH, 2CH, EZR, NEH, EST, JOB, PSA, PRO, ECC, SNG, ISA, JER, LAM, EZK, DAN, HOS, JOL, AMO, OBA, JON, MIC, NAM, HAB, ZEP, HAG, ZEC, MAL, MAT, MRK, LUK, JHN, ACT, ROM, 1CO, 2CO, GAL, EPH, PHP, COL, 1TH, 2TH, 1TI, 2TI, TIT, PHM, HEB, JAS, 1PE, 2PE, 1JN, 2JN, 3JN, JUD, REV`
-
-When the elder writes a passage in Dutch like "Matteüs 9:18-26", convert it internally to `MAT.9.18-26`.
+Passages use OSIS format: `BOOK.CHAPTER.VERSES` (e.g. `MAT.9.18-26`, `LUK.15.11-32`, `JHN.3.16`). Convert Dutch book names to standard 3-letter OSIS codes internally.
 
 ---
 
 ## CONFIG STRUCTURE
 
-You build two config files internally (never show them to the elder). Examples live in `example/`.
+You build config files internally (never show them to the elder). Full working examples in `example/`.
 
-### `config.json` (for the presentation)
-
-```json
-{
-  "passage_label": "Matteüs 9:18–26",
-  "passage_label_short": "Matteüs 9",
-  "languages": ["nl", "en", "fr", "ar", "fa", "tr"],
-  "title": {
-    "nl": "Hou moed, lieve dochter",
-    "en": "Take heart, dear daughter",
-    "ar": "ثِقي يا ابْنَتي العَزيزَة",
-    "fa": "دلیر باش، دخترم عزیز"
-  },
-  "qr_image": "example/qr.png",
-  "qr_caption": "Scan voor de bijbelpassage",
-  "verse_groups": [[18, 19], [20, 21, 22], [23, 24, 25, 26]],
-  "points": [
-    {
-      "title": {
-        "nl": "De leider en de vrouw",
-        "en": "The leader and the woman",
-        "ar": "الرَّئيسُ والْمَرْأَةُ",
-        "fa": "رئیس و زن"
-      },
-      "image": "example/point_images/point1.jpg"
-    }
-  ]
-}
-```
-
-Field notes:
-- `languages`: array of language codes. Supported: `nl, en, fr, ar, fa, tr`. Max 6 (3×2 grid).
-- `verse_groups`: array of arrays. Each inner array is one bible-text slide.
-- `points`: array of any length (1, 2, 3, 4, 5, ...). Each gets its own slide.
-- `image` in a point: path to an image file. Set to `null` or omit for a "[ afbeelding volgt ]" placeholder.
+### `config.json`
+Fields: `passage_label` (display string), `passage_label_short`, `languages` (array; supported: `nl en fr ar fa tr`; max 6), `title` (object keyed by lang), `qr_image` (path or null), `qr_caption`, `verse_groups` (array of arrays — each inner array is one slide, e.g. `[[18,19],[20,21,22],[23,24,25,26]]`), `points` (array of `{title:{nl,en,ar,fa}, image: path|null}`), optional `mode: "bible_only"` to skip title/outline/point slides.
 
 ### `bible_texts.json`
-
-```json
-{
-  "nl": { "18": "Hij was nog niet uitgesproken...", "19": "...", ... },
-  "en": { "18": "While he was saying this...", "19": "...", ... },
-  ...
-}
-```
-
-Key = verse number (as string). Value = full verse text as pasted by elder.
+Object keyed by lang code → object keyed by verse number (string) → verse text. E.g. `{"nl":{"18":"tekst..."},"en":{"18":"text..."}}`.
 
 ### `childsheet_config.json`
-
-```json
-{
-  "title": "Kinderblad",
-  "subtitle": "Matteüs 9:18–26 — Hou moed, lieve dochter",
-  "wordsearch": {
-    "words":          ["JAIRUS", "JEZUS", "MENIGTE", ...],
-    "display_words":  ["Jaïrus", "Jezus", "Menigte", ...],
-    "grid_size":      14
-  },
-  "story_order": {
-    "images": ["example/story_images/1.jpg", ..., "example/story_images/6.jpg"],
-    "instruction": "Schrijf het cijfer (1 tot 6) in het vakje onder elk plaatje"
-  },
-  "questions": {
-    "items": [
-      "Wanneer was jij erg verdrietig of bang?",
-      "Naar wie ging jij toen toe?",
-      "Wat zou Jezus voor jou kunnen doen?"
-    ]
-  }
-}
-```
-
-Any of `wordsearch`, `story_order`, `questions` can be omitted — only sections present in the config will appear on the sheet.
+Fields: `title`, `subtitle`, plus any combination of activity sections — `wordsearch` (`{words:[], display_words:[], grid_size:14}`), `story_order` (`{images:[], instruction:""}`), `fruit_tree` (`{good:[], bad:[]}`), `questions` (`{items:[]}`). Omit sections you don't need.
 
 ---
 
@@ -180,11 +105,7 @@ Then ask for:
 2. **Try to scrape all texts automatically** using `WebFetch` on each URL. Extract verse number → text per language. This is allowed because you are fetching from the authoritative official source, not from your own memory.
 3. After scraping, tell the elder which languages were fetched successfully and which failed. Show only failed ones.
 4. **Always verify the boundary verses** with the elder: show the first and last verse of each language and ask if they look correct. Flag any anomalies you noticed (e.g. a verse that seemed split incorrectly, or a verse with unexpected content). The elder is the final authority on correctness.
-5. If scraping fails for a language, apply these fallbacks in order:
-   1. Paste the URL into the chat and retry `WebFetch` on it.
-   2. If that still fails, try `WebSearch` with the passage + translation name to find and fetch the text.
-   3. If that also fails, ask the elder: *"Kun je deze link kopiëren en in een eigen berichtje hier plakken? Dan haal ik de tekst zelf op."*
-
+5. If scraping fails for a language, apply the fallback sequence from Rule 1 (paste URL in chat → WebSearch → ask elder to send the URL).
 6. If the elder wants a subset of languages (e.g. only 4), honor that.
 7. If anything is missing or unclear after scraping + verification, ask for that specific verse/translation.
 
@@ -266,16 +187,7 @@ Start a separate conversation about the children's sheet. **Every sermon gets it
 
 > *"Voor het kinderblad bij dit verhaal stel ik voor: [activiteit 1] omdat [reden], en [activiteit 2] omdat [reden]. Wat vind je ervan? Wil je iets aanpassen of een andere combinatie proberen?"*
 
-Use the passage and theme as your guide when choosing:
-
-| Passage type | Activities that often fit well |
-|---|---|
-| Verhaal met duidelijke scènes (bijv. verloren zoon, Jaïrus) | Verhaalvolgorde, woordzoeker, open vragen |
-| Passages over karakter/keuzes/groei (bijv. Galaten 5, Spreuken) | Vruchtenboom, open vragen |
-| Passages met veel personen of plaatsen | Woordzoeker, matchingopdracht |
-| Passages met één centrale handeling | Kleurplaat van die scène, invuloefening |
-
-Have a short back-and-forth with the elder until you land on a combination both find fitting. Don't rush to generate — it's fine to go through a round or two of suggestions.
+Use the passage and theme as your guide: narrative with scenes → verhaalvolgorde + woordzoeker; character/growth themes → vruchtenboom + vragen; many names/places → woordzoeker; single central act → kleurplaat. Have a short back-and-forth until you land on a good combination — it's fine to go through a round or two.
 
 **Available sections (combine freely):**
 
@@ -308,18 +220,7 @@ During a session with an elder, you may discover things that could make the scri
 
 2. **Create a GitHub issue** — if the improvement is a good idea but too large, uncertain, or needs design decisions beyond the current session, log it as an issue on `roeltje25/Hvv-sermon-kit` using the MCP tool `mcp__github__issue_write` (`method: "create"`, `owner: "roeltje25"`, `repo: "Hvv-sermon-kit"`).
 
-**Examples of things worth acting on:**
-- A new kinderblad activity was built and works well → commit the `draw_*` function to the repo
-- The elder needed to correct an auto-fetched verse because scraping produced garbled text → note the pattern, fix the scraping logic if possible
-- A verse distribution kept overflowing a card → consider whether the default suggestion logic should be smarter
-- The elder asked for something the scripts don't support yet → implement it or open an issue
-
-**For a GitHub issue, include:**
-- Title: short description in Dutch, e.g. `Nieuwe kinderblad-activiteit: verbind-de-punten`
-- Body: what the improvement is, what triggered it in the session, and (if code was written) the relevant code in full
-- Labels: `kinderblad`, `enhancement`, or `bug` as appropriate
-
-Do this automatically — no need to ask the elder's permission. It's fine to mention it briefly: *"Ik heb deze verbetering ook meteen in de tool opgeslagen, zodat de volgende oudste er ook van profiteert."*
+Examples: new `draw_*` function that worked → commit it; scraping bug found → fix it; missing feature → implement or open an issue. For GitHub issues: Dutch title, body with what triggered it + relevant code, label (`kinderblad`/`enhancement`/`bug`). Do this automatically; briefly mention it to the elder.
 
 ---
 
@@ -339,55 +240,8 @@ The default style is **parchment**: warm beige backgrounds, brown text, Georgia 
 
 ---
 
-## HELPFUL PHRASES FOR THE ELDER (in Dutch)
-
-- *"Welke passage ga je prediken?"*
-- *"Plak de teksten hier, dan verwerk ik ze."*
-- *"Ik mag geen bijbelverzen uit mijn geheugen invoegen — dat zou leiden tot onnauwkeurige teksten."*
-- *"Hoeveel preekpunten heb je? Een, twee, drie — net wat past."*
-- *"Als je geen afbeelding hebt voor een punt, laat ik een lege plek — die kun je later in PowerPoint zelf invullen."*
-- *"Het kinderblad is flexibel: we kunnen een woordzoeker, een verhaalvolgorde, open vragen, of een combinatie maken. Wat past bij deze preek?"*
-
----
-
 ## PARSING PASTED BIBLE TEXT
 
-Elders usually paste verses in one of these patterns. Be flexible:
+Elders paste verses in many formats (inline numbers like `18 text 19 text`, line-by-line, `v18 text`, or copied from bible.com with cross-references mixed in). Be flexible: extract verse number → text regardless of format. Strip footnote markers (`[a]`, `#:2`, HTML entities); preserve original punctuation. If a verse appears missing or malformed, ask the elder to confirm it.
 
-**Pattern A — inline verse numbers:**
-```
-18 Hij was nog niet uitgesproken of er kwam een leider... 19 Jezus stond op en volgde hem...
-```
-
-**Pattern B — each verse on its own line:**
-```
-18  Hij was nog niet uitgesproken of er kwam een leider...
-19  Jezus stond op en volgde hem...
-```
-
-**Pattern C — with a verse-number prefix and paragraph breaks:**
-```
-v18 Hij was nog niet uitgesproken...
-
-v19 Jezus stond op...
-```
-
-**Pattern D — copied from bible.com/debijbel.nl, sometimes with extra marks:**
-```
-189:18-26 Marc. 5:22-43Luc. 8:40-56Hij was nog niet uitgesproken...
-```
-
-For pattern D, ignore the cross-reference marks and extract verses by looking for the numeric verse markers.
-
-**When parsing, always**:
-- Strip footnote markers like `#:2`, `[a]`, superscript references, HTML entities
-- Preserve quotation marks and punctuation as they appear in the source
-- If a verse appears missing or malformed, ask the elder to confirm that specific verse
-
-**When 5 of 6 languages are provided** and the elder asks you to fill in the last one — refuse. Remind them: *"Ik vul nooit zelf bijbelteksten in. Kun je de laatste ook nog plakken?"*
-
----
-
-## STYLING REMINDER
-
-The default parchment style is already applied by the scripts. For custom style requests, update `config.style.palette` with hex colors. If the elder provides a reference image, extract dominant colors and build a palette; show them to the elder before generating.
+**When 5 of 6 languages are provided** and the elder asks you to fill in the last one — refuse: *"Ik vul nooit zelf bijbelteksten in. Kun je de laatste ook nog plakken?"*
