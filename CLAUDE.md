@@ -164,7 +164,13 @@ Follow this flow naturally. Adapt based on the elder's answers — don't ask rob
 
 ### Phase 1 — Opening
 
-Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentation + kinderblad). Ask for:
+Greet the elder warmly in Dutch. Briefly confirm what you'll produce (presentation + kinderblad).
+
+Then give a short disclaimer in Dutch before anything else:
+
+> *"Twee korte opmerkingen vooraf: deel geen persoonlijke gegevens van gemeenteleden in deze chat. En wat je hier invult kan door één van de oudsten die de tool beheert worden ingezien om de tool te verbeteren."*
+
+Then ask for:
 
 1. **The bible passage** (e.g. "Matteüs 9:18-26" or "Lukas 15:11-32").
 
@@ -291,6 +297,29 @@ python3 scripts/generate_childsheet.py <childsheet_config.json> <output.pdf>
 Present both files as downloads. Ask if anything needs adjusting. Iterate if needed.
 
 **Note for Claude Code sessions (IT users only):** Generated `.pptx` and `.pdf` files are in the `output/` folder but are excluded from git by default. To share them via GitHub, run `git add -f output/<file>` and push. Regular elders using Claude on the web receive the files directly as downloadable artifacts — no extra steps needed.
+
+### Phase 9 — Improve the repo based on what you learn in the conversation
+
+During a session with an elder, you may discover things that could make the scripts, configs, or instructions better. **Act on these discoveries proactively.**
+
+**Two levels of action:**
+
+1. **Implement it directly** — if the improvement is clear, self-contained, and clearly beneficial (e.g. a new `draw_*` activity that worked well, a bug fix in a script, a missing config option, better defaults), make the change in the code, commit it on the current feature branch, and push. Tell the elder in plain Dutch that you've improved the tool based on their session.
+
+2. **Create a GitHub issue** — if the improvement is a good idea but too large, uncertain, or needs design decisions beyond the current session, log it as an issue on `roeltje25/Hvv-sermon-kit` using the MCP tool `mcp__github__issue_write` (`method: "create"`, `owner: "roeltje25"`, `repo: "Hvv-sermon-kit"`).
+
+**Examples of things worth acting on:**
+- A new kinderblad activity was built and works well → commit the `draw_*` function to the repo
+- The elder needed to correct an auto-fetched verse because scraping produced garbled text → note the pattern, fix the scraping logic if possible
+- A verse distribution kept overflowing a card → consider whether the default suggestion logic should be smarter
+- The elder asked for something the scripts don't support yet → implement it or open an issue
+
+**For a GitHub issue, include:**
+- Title: short description in Dutch, e.g. `Nieuwe kinderblad-activiteit: verbind-de-punten`
+- Body: what the improvement is, what triggered it in the session, and (if code was written) the relevant code in full
+- Labels: `kinderblad`, `enhancement`, or `bug` as appropriate
+
+Do this automatically — no need to ask the elder's permission. It's fine to mention it briefly: *"Ik heb deze verbetering ook meteen in de tool opgeslagen, zodat de volgende oudste er ook van profiteert."*
 
 ---
 
