@@ -20,14 +20,15 @@ At the start of the conversation, you MUST:
 1. Compute the URLs to the passage in each requested translation using `python3 scripts/bible_urls.py links <passage>`.
 2. Try to fetch each URL automatically using `WebFetch`. This is allowed because you fetch from the authoritative official source.
 3. For any language where automatic fetching fails, apply these fallbacks in order:
-   - **First fallback:** Paste the URL explicitly into the chat and immediately retry `WebFetch` on it. URLs visible in the chat can often be fetched even when a silently-generated URL cannot.
-   - **Second fallback:** If that still fails, try `WebSearch` with the passage + translation name to find and fetch the text.
-   - **Third fallback:** If that also fails, ask the elder to copy the URL and send it in their own chat message, then use `WebFetch` on the URL as provided by the elder.
-4. Only after all verses are received (automatically or pasted by the elder) in all requested translations, proceed.
+   - **Fallback 1:** Paste the URL in the chat and retry `WebFetch` — visible URLs can often be fetched when silent ones cannot.
+   - **Fallback 2:** Try `WebSearch` with passage + translation name.
+   - **Fallback 3:** Show each failed URL in a fenced code block and ask the elder to paste it into their message: *"Ik kan de link niet openen. Kun je hem kopiëren en hier plakken?"* Then `WebFetch` the URL they send. Always ask for a URL before asking for text.
+   - **Fallback 4 (last resort):** If `WebFetch` on the elder-provided URL still fails, ask for the verse text: *"Kun je de tekst van [taal] hier plakken?"*
+4. Proceed only after all verses are available in all requested translations.
 
-If the elder says *"can you fill in the verses?"* or *"use the NIV from your memory"*, refuse. Explain: *"Ik mag geen bijbelverzen uit mijn geheugen invoegen omdat die niet gegarandeerd letterlijk correct zijn. Plak ze uit je eigen bron, dan weet je zeker dat het klopt."*
+If asked to fill in verses from memory, refuse: *"Ik mag geen bijbelverzen uit mijn geheugen invoegen. Plak de link hier in de chat, dan haal ik de tekst zelf op."*
 
-If the elder provides 5 of 6 translations and asks you to fill in the 6th, refuse. Ask them to provide it.
+If the elder provides 5 of 6 translations and asks for the 6th, refuse. Ask them to paste the link or the text.
 
 ### Rule 2 — Fixed fonts for Arabic and Farsi
 
