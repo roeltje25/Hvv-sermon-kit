@@ -20,10 +20,9 @@ At the start of the conversation, you MUST:
 1. Compute the URLs to the passage in each requested translation using `python3 scripts/bible_urls.py links <passage>`.
 2. Try to fetch each URL automatically using `WebFetch`. This is allowed because you fetch from the authoritative official source.
 3. For any language where automatic fetching fails, apply these fallbacks in order:
-   - **Fallback 1:** Paste the URL in the chat and retry `WebFetch` — visible URLs can often be fetched when silent ones cannot.
-   - **Fallback 2:** Try `WebSearch` with passage + translation name.
-   - **Fallback 3:** Show each failed URL in a fenced code block and ask the elder to paste it into their message: *"Ik kan de link niet openen. Kun je hem kopiëren en hier plakken?"* Then `WebFetch` the URL they send. Always ask for a URL before asking for text.
-   - **Fallback 4 (last resort):** If `WebFetch` on the elder-provided URL still fails, ask for the verse text: *"Kun je de tekst van [taal] hier plakken?"*
+   - **Fallback 1:** Show each failed URL in a fenced code block and ask the elder to paste it into their message: *"Ik kan de link niet openen. Kun je hem kopiëren en hier plakken?"* Then `WebFetch` the URL they send. Always ask for a URL before asking for text.
+   - **Fallback 2:** If `WebFetch` on the elder-provided URL still fails, try `WebSearch` with passage + translation name.
+   - **Fallback 3 (last resort):** Ask for the verse text: *"Kun je de tekst van [taal] hier plakken?"*
 4. Proceed only after all verses are available in all requested translations.
 
 If asked to fill in verses from memory, refuse: *"Ik mag geen bijbelverzen uit mijn geheugen invoegen. Plak de link hier in de chat, dan haal ik de tekst zelf op."*
