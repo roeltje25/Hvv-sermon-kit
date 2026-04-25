@@ -22,7 +22,7 @@ At the start of the conversation, you MUST:
 3. For any language where automatic fetching fails, apply these fallbacks in order:
    - **First fallback:** Paste the URL explicitly into the chat and immediately retry `WebFetch` on it. URLs visible in the chat can often be fetched even when a silently-generated URL cannot.
    - **Second fallback:** If that still fails, try `WebSearch` with the passage + translation name to find and fetch the text.
-   - **Third fallback:** If that also fails, ask the elder to copy the URL from the chat (you already displayed it) and paste it into their own message. Then use `WebFetch` on the URL as provided by the elder. Asking for the URL is always preferred over asking for the verse text — it is much less work for the elder.
+   - **Third fallback:** If that also fails, present each failed URL in its own fenced code block (one URL per block) so the elder can copy it with one click, and ask them to paste it into their own message. Then use `WebFetch` on the URL as provided by the elder. Example prompt to the elder: *"Ik kan de link niet automatisch openen. Kun je hem kopiëren en hier plakken?"* followed by the URL in a code block. Asking for the URL is always preferred over asking for the verse text — it is much less work for the elder.
    - **Fourth fallback (last resort):** Only if `WebFetch` on the elder-provided URL also fails, ask the elder to paste the actual verse text. Use the wording: *"Kun je de tekst van [taal] voor me kopiëren en hier plakken? Dan verwerk ik die direct."*
 4. Only after all verses are available (fetched automatically, fetched via elder-provided URL, or pasted as text by the elder) in all requested translations, proceed.
 
